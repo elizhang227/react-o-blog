@@ -39,6 +39,34 @@ class Post {
             return err.message;
         }
     }
+
+    static async addPost(title, content, id) {
+        const query = `
+        INSERT into posts
+            (title, content, author_id)
+        VALUES
+            ('${title}', '${content}', ${id})`;
+        try {
+            const response = await db.result(query);
+            return response;
+        } catch(err) {
+            return err.message;
+        }
+    }
+
+    static async updateEntry(id, column, content) {
+        try {
+            const response = await db.result(`
+                UPDATE posts
+                SET ${column} = $1
+                WHERE id = $2`,
+                [content, id]
+            )
+            return response;
+        } catch(err) {
+            return err.message;
+        }
+    }
 }
 
 module.exports = Post;

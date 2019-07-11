@@ -30,4 +30,25 @@ router.get('/delete/:post_id?', async (req, res, next) => {
     }
 })
 
+router.put('/update/:post_id?', async (req, res) => {
+    const postId = req.params.post_id;
+    const { content } = req.body;
+    const response = await postModel.updateEntry(postId, 'content', content);
+    if (response.command === 'UPDATE' && response.rowCount >= 1) {
+        res.sendStatus(200);
+    } else {
+        res.send(`could not update post id ${postId}`).status(409)
+    }
+})
+
+router.post('/post/add', async (req, res) => {
+    const { title, author_id, content } = req.body;
+    const response = await postModel.addPost(title, content, author_id);
+    if (response.command === 'INSERT' && response.rowCount >= 1) {
+        res.sendStatus(200)
+    } else {
+        res.send(`Could not add new blog post ${title}`).status(409)
+    }
+})
+
 module.exports = router;
